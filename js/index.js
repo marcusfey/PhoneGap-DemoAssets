@@ -1,7 +1,7 @@
 //Global Variable
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value
-var watchID = null;
+var watchIDAcc = null;
 
 function onPhotoDataSuccess(imageData) {
     var smallImage = document.getElementById('smallImage');
@@ -36,27 +36,28 @@ function onFail(message) {
 
 
 //Acceleration
-function startWatch() {
+function startAccWatch() {
     var options = { frequency: 3000 };
-    watchID = navigator.compass.watchHeading(onWatchSuccess, onWatchError, options);
+    watchIDAcc = navigator.accelerometer.watchAcceleration(onAccWatchSuccess, onAccWatchError, options);
 }
 
-function stopWatch() {
-    if (watchID) {
-        navigator.compass.clearWatch(watchID);
-        watchID = null;
+function stopAccWatch() {
+    if (watchIDAcc) {
+        navigator.compass.clearWatch(watchIDAcc);
+        watchIDAcc = null;
     }
 }
 
-function onWatchSuccess(heading) {
+function onAccWatchSuccess(heading) {
+    var element = document.getElementById('accelerometer');
     element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-		'Acceleration Y: ' + acceleration.y + '<br />' +
-		'Acceleration Z: ' + acceleration.z + '<br />' +
-		'Timestamp: '      + acceleration.timestamp + '<br />';
+    'Acceleration Y: ' + acceleration.y + '<br />' +
+    'Acceleration Z: ' + acceleration.z + '<br />' +
+    'Timestamp: '      + acceleration.timestamp + '<br />';
 }
 
-function onWatchError(compassError) {
-    alert('Compass error: ' + compassError.code);
+function onAccWatchError(accError) {
+    alert('Acceleration error: ' + accError.code);
 }
 
 //CONTACTS

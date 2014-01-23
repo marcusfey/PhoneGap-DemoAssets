@@ -4,14 +4,12 @@
     <title>Acceleration Example</title>
     <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
     <script type="text/javascript" charset="utf-8" src="../js/index.js"></script>
-    <script type="text/javascript" charset="utf-8">
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    </script>
   </head>
   <body>
       <h1>Acceleration</h1>
-      <div id="accelerometer">Waiting for accelerometer...</div>
-      
+        <button onclick="startAccWatch();">Start Watching</button>
+        <button onclick="stopAccWatch();">Stop Watching</button>
+        <div id="accelerometer">Waiting for accelerometer...</div>
       <p style="padding-top:20px;"><a href="../index.html">&lt; Liste</a></p>
   </body>
 </html>
