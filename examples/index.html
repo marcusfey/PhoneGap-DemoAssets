@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<!--
+Licensed to the Apache Software Foundation (ASF) under one
+or more contributor license agreements. See the NOTICE file
+distributed with this work for additional information
+regarding copyright ownership. The ASF licenses this file
+to you under the Apache License, Version 2.0 (the
+"License"); you may not use this file except in compliance
+with the License. You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing,
+software distributed under the License is distributed on an
+"AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+KIND, either express or implied. See the License for the
+specific language governing permissions and limitations
+under the License.
+-->
+<html>
+<head>
+<meta charset="utf-8" />
+<meta name="format-detection" content="telephone=no" />
+<!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
+<meta name="viewport"
+        content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+  <script type="text/javascript" charset="utf-8">
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+             navigator.notification.beep(1);
+           }
+
+    </script>
+    <script type="text/javascript" src="../cordova.js"></script>
+    <script type="text/javascript" src="../js/index.js"></script>
+<title>Hello World</title>
+</head>
+<body>
+        <ul>
+                <li><a href="AccelerometerWatchStartStop.html">AccelerometerWatchStartStop</a>
+                <li><a href="CapturePhoto.html">CapturePhoto</a>
+                <li><a href="CompassGetCurrentHeading.html">CompassGetCurrentHeading</a>
+                <li><a href="CompassWatchHeadingStartStop.html">CompassWatchHeadingStartStop</a>
+                <li><a href="ContactAdress4All.html">ContactAdress4All</a>
+                <li><a href="ContactCreate.html">ContactCreate</a>
+                <li><a href="ContactFind.html">ContactFind</a>
+                <li><a href="GeolocateCurrentPosition.html">GeolocateCurrentPosition</a>
+                <li><a href="FileWriter.html">FileWriter</a>
+                <li><a href="Notification.html">Notification</a>
+                <li><a href="NotificationBeepVibrate.html">NotificationBeepVibrate</a>
+                <li><a href="NotificationPrompt.html">NotificationPrompt</a>
+                <li><a href="SplashscreenShow.html">SplashscreenShow.html</a> (doesn't work this way, see <a href="http://docs.phonegap.com/en/3.3.0/config_ref_images.md.html#Icons%20and%20Splash%20Screens">Docs</a>)
+                <li><a href="SplashscreenHide.html">SplashscreenHide.html</a> (doesn't work this way, see <a href="http://docs.phonegap.com/en/3.3.0/config_ref_images.md.html#Icons%20and%20Splash%20Screens">Docs</a>)
+        </ul>
+        <div class="app">
+                <h1>Apache Cordova 4 Marcus</h1>
+                <div id="deviceready" class="blink">
+                        <p class="event listening">Connecting to Device</p>
+                        <p class="event received">Device is Ready</p>
+                </div>
+        </div>
+</body>
+</html>
