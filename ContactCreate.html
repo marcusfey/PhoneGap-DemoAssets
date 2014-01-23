@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Contact Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    // Wait for device API libraries to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // device APIs are available
+    //
+    function onDeviceReady() {
+        var name="John Doe";
+    	var myContact = navigator.contacts.create(
+        		{"displayName": "Test User",
+        		"name" : name
+        		}
+        );
+        myContact.note = "This contact has a note.";
+        console.log("The contact, " + myContact.displayName + ", note: " + myContact.note);
+        
+        myContact.save();
+        
+        find(name);
+    }
+
+    
+    // device APIs are available
+
+    function find(name) {
+        // find all contacts with 'Frobese' in any name field
+        var options = new ContactFindOptions();
+        options.filter = name;
+        var fields = ["name"];
+        navigator.contacts.find(fields, onSuccess, onError, options);
+    }
+
+    // onSuccess: Get a snapshot of the current contacts
+
+    function onSuccess(contacts) {
+    	console.log("onSuccess");
+        for (var i = 0; i < contacts.length; i++) {
+            console.log("Display Name = " + contacts[i].displayName);
+        }
+    }
+
+    // onError: Failed to get the contacts
+
+    function onError(contactError) {
+        alert('onError!');
+    }
+    
+    
+    
+    </script>
+  </head>
+  <body>
+    <h1>Example</h1>
+    <p>Create Contact</p>
+  </body>
+</html>
