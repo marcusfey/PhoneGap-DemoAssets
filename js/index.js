@@ -48,22 +48,11 @@ function stopWatch() {
     }
 }
 
-<<<<<<< HEAD
 function onWatchSuccess(heading) {
-    var element = document.getElementById('heading');
-    element.innerHTML = 'Heading: ' + heading.magneticHeading;
-=======
-function onAccSuccess(acceleration) {
-    var element = document.getElementById('accelerometer');
-    if(element == null) {
-    	console.log("element with ID 'accelerometer' not found");
-    } else {
     element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
 		'Acceleration Y: ' + acceleration.y + '<br />' +
 		'Acceleration Z: ' + acceleration.z + '<br />' +
 		'Timestamp: '      + acceleration.timestamp + '<br />';
-    }
->>>>>>> 24fc3eda8f3de1896241599da7ecc824233fe587
 }
 
 function onWatchError(compassError) {
