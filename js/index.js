@@ -43,12 +43,12 @@ function startAccWatch() {
 
 function stopAccWatch() {
     if (watchIDAcc) {
-        navigator.compass.clearWatch(watchIDAcc);
+        navigator.accelerometer.clearWatch(watchIDAcc);
         watchIDAcc = null;
     }
 }
 
-function onAccWatchSuccess(heading) {
+function onAccWatchSuccess(acceleration) {
     var element = document.getElementById('accelerometer');
     element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
     'Acceleration Y: ' + acceleration.y + '<br />' +
