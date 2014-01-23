@@ -1,49 +1,145 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one
- * or more contributor license agreements.  See the NOTICE file
- * distributed with this work for additional information
- * regarding copyright ownership.  The ASF licenses this file
- * to you under the Apache License, Version 2.0 (the
- * "License"); you may not use this file except in compliance
- * with the License.  You may obtain a copy of the License at
- *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied.  See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
-var app = {
-    // Application Constructor
-    initialize: function() {
-        this.bindEvents();
-    },
-    // Bind Event Listeners
-    //
-    // Bind any events that are required on startup. Common events are:
-    // 'load', 'deviceready', 'offline', and 'online'.
-    bindEvents: function() {
-        document.addEventListener('deviceready', this.onDeviceReady, false);
-    },
-    // deviceready Event Handler
-    //
-    // The scope of 'this' is the event. In order to call the 'receivedEvent'
-    // function, we must explicity call 'app.receivedEvent(...);'
-    onDeviceReady: function() {
-        app.receivedEvent('deviceready');
-    },
-    // Update DOM on a Received Event
-    receivedEvent: function(id) {
-        var parentElement = document.getElementById(id);
-        var listeningElement = parentElement.querySelector('.listening');
-        var receivedElement = parentElement.querySelector('.received');
+//Global Variable
+var pictureSource;   // picture source
+var destinationType; // sets the format of returned value
 
-        listeningElement.setAttribute('style', 'display:none;');
-        receivedElement.setAttribute('style', 'display:block;');
+//OnDeviceReady
+function onDeviceReady() {
+    pictureSource=navigator.camera.PictureSourceType;
+    destinationType=navigator.camera.DestinationType;
+    startWatch();
+}
 
-        console.log('Received Event: ' + id);
+function onPhotoDataSuccess(imageData) {
+    var smallImage = document.getElementById('smallImage');
+    smallImage.style.display = 'block';
+    smallImage.src = "data:image/jpeg;base64," + imageData;
+}
+
+function onPhotoURISuccess(imageURI) {
+    var largeImage = document.getElementById('largeImage');
+    largeImage.style.display = 'block';
+    largeImage.src = imageURI;
+}
+
+function capturePhoto() {
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 50,
+                                destinationType: destinationType.DATA_URL });
+}
+
+function capturePhotoEdit() {
+    navigator.camera.getPicture(onPhotoDataSuccess, onFail, { quality: 20, allowEdit: true,
+                                destinationType: destinationType.DATA_URL });
+}
+
+function getPhoto(source) {
+    navigator.camera.getPicture(onPhotoURISuccess, onFail, { quality: 50,
+                                destinationType: destinationType.FILE_URI,
+                                sourceType: source });
+}
+function onFail(message) {
+    alert('Failed because: ' + message);
+}
+
+
+//Acceleration
+function startWatch() {
+    var options = { frequency: 3000 };
+    watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, options);
+}
+
+function stopWatch() {
+    if (watchID) {
+        navigator.accelerometer.clearWatch(watchID);
+        watchID = null;
     }
-};
+}
+
+function onAccSuccess(acceleration) {
+    var element = document.getElementById('accelerometer');
+    
+    element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
+    'Acceleration Y: ' + acceleration.y + '<br />' +
+    'Acceleration Z: ' + acceleration.z + '<br />' +
+    'Timestamp: '      + acceleration.timestamp + '<br />';
+}
+
+function onAccError() {
+    alert('onAccError!');
+}
+
+//CONTACTS
+function createCon(){
+    // create a new contact object
+    var contact = navigator.contacts.create();
+    contact.displayName = "AA";
+    contact.nickname = "AA";
+    // save to device
+    contact.save(onSaveSuccess,onSaveError);
+}
+
+function onSaveSuccess(contact) {
+    alert("Save Success");
+}
+
+function onSaveError(contactError) {
+    alert("Error = " + contactError.code);
+}
+
+function findCon(){
+    var options = new ContactFindOptions();
+    options.filter = "AA";
+    var fields = ["displayName", "nickname"];
+    navigator.contacts.find(fields, onFindSuccess, onFindError, options);
+}
+
+function onFindSuccess(contacts) {
+    for (var i = 0; i < contacts.length; i++) {
+        alert("Display Name = " + contacts[i].nickname);
+    }
+}
+
+function onFindError(contactError) {
+    alert("Error = " + contactError.code);
+}
+
+
+function removeCon(){
+    var options = new ContactFindOptions();
+    options.filter = "AA";
+    var fields = ["displayName", "nickname"];
+    navigator.contacts.find(fields, onSuccessRemove, onRemoveError, options);
+    
+}
+
+function onSuccessRemove(contacts) {
+    for (var i = 0; i < contacts.length; i++) {
+        contacts[i].remove(onRemoveSuccess,onRemoveError);
+    }
+}
+
+function onRemoveSuccess(contacts) {
+    alert("Removal Success");
+}
+
+function onRemoveError(contactError) {
+    alert("Error = " + contactError.code);
+}
+
+
+
+
+//NOTIFICATIONS
+function alertDismissed() {
+    // do something
+}
+
+function showAlert() {
+    navigator.notification.alert(
+                                 'You are the winner!',  // message
+                                 alertDismissed,         // callback
+                                 'Game Over',            // title
+                                 'Done'                  // buttonName
+                                 );
+}
+
+
