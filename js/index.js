@@ -1,13 +1,7 @@
 //Global Variable
 var pictureSource;   // picture source
 var destinationType; // sets the format of returned value
-
-//OnDeviceReady
-function onDeviceReady() {
-    pictureSource=navigator.camera.PictureSourceType;
-    destinationType=navigator.camera.DestinationType;
-    startWatch();
-}
+var watchID = null;
 
 function onPhotoDataSuccess(imageData) {
     var smallImage = document.getElementById('smallImage');
@@ -44,35 +38,31 @@ function onFail(message) {
 //Acceleration
 function startWatch() {
     var options = { frequency: 3000 };
-    watchID = navigator.accelerometer.watchAcceleration(onAccSuccess, onAccError, options);
+    watchID = navigator.compass.watchHeading(onWatchSuccess, onWatchError, options);
 }
 
 function stopWatch() {
     if (watchID) {
-        navigator.accelerometer.clearWatch(watchID);
+        navigator.compass.clearWatch(watchID);
         watchID = null;
     }
 }
 
-function onAccSuccess(acceleration) {
-    var element = document.getElementById('accelerometer');
-    
-    element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-    'Acceleration Y: ' + acceleration.y + '<br />' +
-    'Acceleration Z: ' + acceleration.z + '<br />' +
-    'Timestamp: '      + acceleration.timestamp + '<br />';
+function onWatchSuccess(heading) {
+    var element = document.getElementById('heading');
+    element.innerHTML = 'Heading: ' + heading.magneticHeading;
 }
 
-function onAccError() {
-    alert('onAccError!');
+function onWatchError(compassError) {
+    alert('Compass error: ' + compassError.code);
 }
 
 //CONTACTS
 function createCon(){
     // create a new contact object
     var contact = navigator.contacts.create();
-    contact.displayName = "AA";
-    contact.nickname = "AA";
+    contact.displayName = document.getElementById('conAdd').value;
+    contact.nickname = document.getElementById('conAdd').value;
     // save to device
     contact.save(onSaveSuccess,onSaveError);
 }
@@ -87,14 +77,15 @@ function onSaveError(contactError) {
 
 function findCon(){
     var options = new ContactFindOptions();
-    options.filter = "AA";
+    options.filter = document.getElementById('conFin').value;
     var fields = ["displayName", "nickname"];
     navigator.contacts.find(fields, onFindSuccess, onFindError, options);
 }
 
 function onFindSuccess(contacts) {
+    // display the address information for all contacts
     for (var i = 0; i < contacts.length; i++) {
-        alert("Display Name = " + contacts[i].nickname);
+        alert(contacts[i].displayName);
     }
 }
 
@@ -105,9 +96,9 @@ function onFindError(contactError) {
 
 function removeCon(){
     var options = new ContactFindOptions();
-    options.filter = "AA";
+    options.filter = document.getElementById('conRem').value;
     var fields = ["displayName", "nickname"];
-    navigator.contacts.find(fields, onSuccessRemove, onRemoveError, options);
+    navigator.contacts.find(fields, onRemoveSuccess, onRemoveError, options);
     
 }
 
@@ -125,9 +116,6 @@ function onRemoveError(contactError) {
     alert("Error = " + contactError.code);
 }
 
-
-
-
 //NOTIFICATIONS
 function alertDismissed() {
     // do something
@@ -142,4 +130,87 @@ function showAlert() {
                                  );
 }
 
+function playBeep() {
+    navigator.notification.beep(3);
+}
 
+function vibrate() {
+    navigator.notification.vibrate(2000);
+}
+
+function onPrompt(results) {
+    alert("You selected button number " + results.buttonIndex + " and entered " + results.input1);
+}
+function showPrompt() {
+    navigator.notification.prompt(
+                                  'Please enter your name',  // message
+                                  onPrompt,                  // callback to invoke
+                                  'Registration',            // title
+                                  ['Ok','Exit'],             // buttonLabels
+                                  'default Text'                 // defaultText
+                                  );
+}
+
+//Geolocation
+function onGeoSuccess(position) {
+    var element = document.getElementById('geolocation');
+    element.innerHTML = 'Latitude: '           + position.coords.latitude              + '<br />' +
+    'Longitude: '          + position.coords.longitude             + '<br />' +
+    'Altitude: '           + position.coords.altitude              + '<br />' +
+    'Accuracy: '           + position.coords.accuracy              + '<br />' +
+    'Altitude Accuracy: '  + position.coords.altitudeAccuracy      + '<br />' +
+    'Heading: '            + position.coords.heading               + '<br />' +
+    'Speed: '              + position.coords.speed                 + '<br />' +
+    'Timestamp: '          + position.timestamp                    + '<br />';
+}
+
+function onGeoError(error) {
+    alert('code: '    + error.code    + '\n' +
+          'message: ' + error.message + '\n');
+}
+
+
+//FILE
+function writeFile() {
+    window.requestFileSystem(LocalFileSystem.PERSISTENT, 0, gotFS, fail);
+}
+
+function gotFS(fileSystem) {
+    fileSystem.root.getFile("readme.txt", {create: true, exclusive: false}, gotFileEntry, fail);
+}
+
+function gotFileEntry(fileEntry) {
+    fileEntry.createWriter(gotFileWriter, writerFail);
+}
+
+function gotFileWriter(writer) {
+    writer.onwriteend = function(evt) {
+        console.log("contents of file now 'some sample text'");
+        writer.truncate(11);
+        writer.onwriteend = function(evt) {
+            console.log("contents of file now 'some sample'");
+            writer.seek(4);
+            writer.write(" different text");
+            writer.onwriteend = function(evt){
+                console.log("contents of file now 'some different text'");
+            }
+        };
+    };
+    writer.write("some sample text");
+}
+
+function writerFail(error) {
+    console.log(error.code);
+}
+
+//Compass
+function getCurrentHeading() {
+    navigator.compass.getCurrentHeading(onCompSuccess, onCompError);
+}
+
+function onCompSuccess(heading) {
+    alert('Heading: ' + heading.magneticHeading);
+}
+function onCompError(compassError) {
+    alert('Compass Error: ' + compassError.code);
+}

@@ -4,37 +4,17 @@
     <title>Notification Example</title>
 
     <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+    <script type="text/javascript" charset="utf-8" src="../js/index.js"></script>
     <script type="text/javascript" charset="utf-8">
-
-    // Wait for device API libraries to load
-    //
-    document.addEventListener("deviceready", onDeviceReady, false);
-
-    // device APIs are available
-    //
-    function onDeviceReady() {
-        // Empty
-    }
-
-    // process the confirmation dialog result
-    function onConfirm(buttonIndex) {
-        alert('You selected button ' + buttonIndex);
-    }
-
-    // Show a custom confirmation dialog
-    //
-    function showConfirm() {
-        navigator.notification.confirm(
-            'You are the winner!', // message
-             onConfirm,            // callback to invoke with index of button pressed
-            'Game Over',           // title
-            ['Restart','Exit']         // buttonLabels
-        );
-    }
-
-    </script>
+        document.addEventListener('deviceready', this.onDeviceReady, false);
+        </script>
   </head>
   <body>
-    <p><a href="#" onclick="showConfirm(); return false;">Show Confirm</a></p>
+      <h1>Notification</h1>
+    <p><a href="#" onclick="showAlert(); return false;">Show Alert</a></p>
+    <p><a href="#" onclick="playBeep(); return false;">Play Beep</a></p>
+    <p><a href="#" onclick="vibrate(); return false;">Vibrate</a></p>
+    <p><a href="#" onclick="showPrompt(); return false;">Show Prompt</a></p>
+    <p style="padding-top:20px;"><a href="../index.html">&lt; Liste</a></p>
   </body>
 </html>
