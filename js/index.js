@@ -58,11 +58,12 @@ function onAccSuccess(acceleration) {
     var element = document.getElementById('accelerometer');
     if(element == null) {
     	console.log("element with ID 'accelerometer' not found");
-    }
+    } else {
     element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-    'Acceleration Y: ' + acceleration.y + '<br />' +
-    'Acceleration Z: ' + acceleration.z + '<br />' +
-    'Timestamp: '      + acceleration.timestamp + '<br />';
+		'Acceleration Y: ' + acceleration.y + '<br />' +
+		'Acceleration Z: ' + acceleration.z + '<br />' +
+		'Timestamp: '      + acceleration.timestamp + '<br />';
+    }
 }
 
 function onAccError() {
