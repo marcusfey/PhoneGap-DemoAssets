@@ -1,67 +1,17 @@
 <!DOCTYPE HTML>
 <html>
 <head>
-
 <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
 <script type="text/javascript" charset="utf-8">
-	// Wait for device API libraries to load
-	//
 	document.addEventListener("deviceready", onDeviceReady, false);
 
-	// device APIs are available
-	//
 	function onDeviceReady() {
 		doDbTest();
-	}
-
-	function dropTable() {
-		
-		var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
-		
-		var msg;
-		db.transaction(function(tx) {
-			tx.executeSql('drop TABLE logs;');
-			console.log("dropped");
-		});
-	}
-	
-	function doDbTest() {
-		console.log("doDbTest");
-
-		var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
-		console.log("doDbTest opened");
-		
-		var msg;
-		db.transaction(function(tx) {
-			tx.executeSql('CREATE TABLE IF NOT EXISTS LOGS (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, log)');
-			tx.executeSql('INSERT INTO LOGS (log) VALUES (?)', ["foo"]);
-			tx.executeSql('INSERT INTO LOGS (log) VALUES (?)', ["bar"]);
-			console.log("INSERTed");
-			msg = '<p>Log message created and row inserted.</p>';
-			document.querySelector('#status').innerHTML = msg;
-		});
-	
-		console.log("doDbTest CREATEed & INSERTed");
-		
-		db.transaction(function(tx) {
-			tx.executeSql('SELECT * FROM LOGS', [], function(tx, results) {
-				console.log("SELECTed: " + results.rows.length);
-				
-				var len = results.rows.length, i;
-				msg = "<p>Found rows: " + len + "</p>";
-				document.querySelector('#status').innerHTML += msg;
-				for (i = 0; i < len; i++) {
-					msg = "<p><b>" + results.rows.item(i).log + "</b></p>";
-					document.querySelector('#status').innerHTML += msg;
-				}
-			}, null);
-		});
-		
-		console.log("doDbTest SELECTed");
 	}
 </script>
 </head>
 <body>
+    <h1>WebSql</h1>
 	<div id="status" name="status">Status Message</div>
 	<p><a href="javascript:dropTable()">Drop table</a></p>
 	<p><a href="javascript:doDbTest()">doDbTest</a></p>

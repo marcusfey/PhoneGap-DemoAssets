@@ -217,3 +217,50 @@ function onCompSuccess(heading) {
 function onCompError(compassError) {
     alert('Compass Error: ' + compassError.code);
 }
+
+//WEBSQL
+function dropTable() {
+    
+    var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+    
+    var msg;
+    db.transaction(function(tx) {
+                   tx.executeSql('drop TABLE logs;');
+                   console.log("dropped");
+                   });
+}
+
+function doDbTest() {
+    console.log("doDbTest");
+    
+    var db = openDatabase('mydb', '1.0', 'Test DB', 2 * 1024 * 1024);
+    console.log("doDbTest opened");
+    
+    var msg;
+    db.transaction(function(tx) {
+                   tx.executeSql('CREATE TABLE IF NOT EXISTS LOGS (id  INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT, log)');
+                   tx.executeSql('INSERT INTO LOGS (log) VALUES (?)', ["foo"]);
+                   tx.executeSql('INSERT INTO LOGS (log) VALUES (?)', ["bar"]);
+                   console.log("INSERTed");
+                   msg = '<p>Log message created and row inserted.</p>';
+                   document.querySelector('#status').innerHTML = msg;
+                   });
+	
+    console.log("doDbTest CREATEed & INSERTed");
+    
+    db.transaction(function(tx) {
+                   tx.executeSql('SELECT * FROM LOGS', [], function(tx, results) {
+                                 console.log("SELECTed: " + results.rows.length);
+                                 
+                                 var len = results.rows.length, i;
+                                 msg = "<p>Found rows: " + len + "</p>";
+                                 document.querySelector('#status').innerHTML += msg;
+                                 for (i = 0; i < len; i++) {
+                                 msg = "<p><b>" + results.rows.item(i).log + "</b></p>";
+                                 document.querySelector('#status').innerHTML += msg;
+                                 }
+                                 }, null);
+                   });
+    
+    console.log("doDbTest SELECTed");
+}
