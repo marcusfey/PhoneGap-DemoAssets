@@ -11,8 +11,8 @@
         
     </head>
     <script type="text/javascript">
-    ADAPTER='indexed-db';
-//     ADAPTER='dom';
+//     ADAPTER='indexed-db';
+    ADAPTER='dom';
     
     // hier wird die Funktion bei der Erstellung von Lawnchair aufgerufen:
     function createEntryCallback() {
@@ -28,7 +28,22 @@
 	        store.save({key:"fdetails", value:formDetails});
 	        });
 	}
-    
+function Person(candidateName, DateTimeOfVerification, ResidentialAddress,date) {
+    this.candidateName=candidateName;
+    this.DateTimeOfVerification=DateTimeOfVerification;
+    this.ResidentialAddress=ResidentialAddress;
+    this.date=date;
+}
+Person.prototype.toString = function() {
+	return this.candidateName+", "+ this.DateTimeOfVerification+", "+ this.ResidentialAddress+", "+this.date;
+}
+// blöderweise muss dies eine gesonderte Funktion und kann kein alternativer konstruktor sein. Methoden können bei JS nicht überladen werden...
+function collection2Person(attributesAsCollection) {
+	return new Person(attributesAsCollection['candidateName'],attributesAsCollection['DateTimeOfVerification'],
+			attributesAsCollection['ResidentialAddress'],
+			attributesAsCollection['date']);
+}
+
     // "nachträglicher" zugriff:
     function createEntry() {
 	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function(){});
@@ -39,8 +54,12 @@
             "ResidentialAddress" : "4 The Road, Etcc....",
             "date" : new Date().getMilliseconds()
         };
-
-	    db.save({key:"fdetails", value:formDetails});
+// 	    db.save({key:"fdetails", value:formDetails});
+        
+        // dies hier geht auch ganz einfach ohne collection:
+        var person=new Person("hans", "01/01/2012", "straße", new Date().getMilliseconds());
+	    db.save({key:"fdetails", value:person});
+        
 	}
     
     // Lawnchair per Callback verwenden:
@@ -75,6 +94,11 @@
 	            alert(obj.value.DateTimeOfVerification);
 	            alert(obj.value.ResidentialAddress);
 	            alert(obj.value.date);
+	            
+	            var person=collection2Person(obj.value);
+	            var s=person.toString();
+	            console.log(s);
+	            alert(s);
 	    	} 
 	        // darauf kommt es an: die zuweisung auf die "umschießende" Variable
 	        obj2=obj;
