@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Capture Photo</title>
+        <script type="text/javascript" charset="utf-8" src="../cordova.js"></script>
+        <script type="text/javascript" charset="utf-8" src="../js/index.js"></script>
+        <script type="text/javascript" charset="utf-8" src="../js/lawnchair-0.6.1.js"></script>
+        <script type="text/javascript" charset="utf-8" src="../js/lawnchair-adapter-indexed-db-0.6.1.js"></script>
+        <script type="text/javascript" charset="utf-8">
+            document.addEventListener('deviceready', this.onDeviceReady, false);</script>
+        
+    </head>
+    <script type="text/javascript">
+    ADAPTER='indexed-db';
+//     ADAPTER='dom';
+    
+    // hier wird die Funktion bei der Erstellung von Lawnchair aufgerufen:
+    function createEntryCallback() {
+	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function(store) {
+	        console.log('storage open, adapter:' + store.adapter);
+	        var formDetails = {
+	            "candidateName" : "Viswa",
+	            "DateTimeOfVerification" : "30/07/2012",
+	            "ResidentialAddress" : "4 The Road, Etcc....",
+	            "date" : new Date().getMilliseconds()
+	        }
+	
+	        store.save({key:"fdetails", value:formDetails});
+	        });
+	}
+    
+    // "nachtr‰glicher" zugriff:
+    function createEntry() {
+	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function(){});
+        console.log('storage open, adapter:' + db.adapter);
+        var formDetails = {
+            "candidateName" : "Viswa",
+            "DateTimeOfVerification" : "30/07/2012",
+            "ResidentialAddress" : "4 The Road, Etcc....",
+            "date" : new Date().getMilliseconds()
+        };
+
+	    db.save({key:"fdetails", value:formDetails});
+	}
+    
+    // Lawnchair per Callback verwenden:
+	function getEntryCallback() {
+	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function(store) {
+	        console.log('storage open, adapter:' + store.adapter);
+	        store.get("fdetails", function(obj) {
+	            console.log(obj);
+	            if(obj!=null) {
+		            alert(obj.value.candidateName);
+		            alert(obj.value.DateTimeOfVerification);
+		            alert(obj.value.ResidentialAddress);
+		            alert(obj.value.date);
+	        	}
+	        });
+	    });
+    }
+
+	// fast kompletter Verzicht auf Callbacks:
+	// TODO: Das funktioniert nicht bei indexed-db. Dann bei dessen Implementierung wird der callback asynchron aufgerufen.
+	// aus f¸hrt dazu, dass der Kontrollfluss in "getEntry" weiter l‰uft, bevor obj2 verwendet werden kann...
+    function getEntry() {
+	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function() {});
+        console.log('storage open, adapter:' + db.adapter);
+	    var obj2="init";
+	    // ".get" gibt die Datenbank und nicht das objekt zur¸ck=>return kann nicht verwendet 
+	    var ret=db.get("fdetails", function(obj) {
+	    	// diese Zeile sind nur zum debugging 
+	        console.log(obj);
+ 	        if(obj!=null) {
+	            alert(obj.value.candidateName);
+	            alert(obj.value.DateTimeOfVerification);
+	            alert(obj.value.ResidentialAddress);
+	            alert(obj.value.date);
+	    	} 
+	        // darauf kommt es an: die zuweisung auf die "umschieﬂende" Variable
+	        obj2=obj;
+	    	// dies hier bringt nichts, nur zu demo-zwecken:
+// 	    	return obj;
+	    });
+	    console.log(obj2);
+	    
+	    // nun kann mit obj2 gearbeitet werden, weil es im Callback zugewiesen wurde
+	    if(obj2!=null && obj2.value !=null) {
+            alert(obj2.value.candidateName);
+            alert(obj2.value.DateTimeOfVerification);
+            alert(obj2.value.ResidentialAddress);
+            alert(obj2.value.date);
+	    } else {
+	    	alert("obj2 ist unerwartet:"+obj2);
+	    }
+    }
+    
+    function removeEntry() {
+	    db = Lawnchair({adapter:ADAPTER,name : 'db'}, function(store) {
+	        console.log('storage open, adapter:' + store.adapter);
+	    	store.remove("fdetails");
+	    });    	
+    }
+    
+    </script>
+    <body>
+        <h1>Lawnchair</h1>
+        <input id="conAdd" value="User"/><button onclick="javascript:createEntry();">create Entry</button> <br>
+        <input id="conRem" value="User"/><button onclick="javascript:removeEntry();">remove Entry</button> <br>
+        <input id="conFin" value="User"/><button onclick="javascript:getEntry();">get entry</button> <br>
+        <p style="padding-top:20px;"><a href="../index.html">&lt; Liste</a></p>
+    </body>
+</html>
