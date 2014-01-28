@@ -28,6 +28,8 @@
 	        store.save({key:"fdetails", value:formDetails});
 	        });
 	}
+
+// -------------------- Person as Demo-Klasse -------------------------//
 function Person(candidateName, DateTimeOfVerification, ResidentialAddress,date) {
     this.candidateName=candidateName;
     this.DateTimeOfVerification=DateTimeOfVerification;
@@ -37,12 +39,14 @@ function Person(candidateName, DateTimeOfVerification, ResidentialAddress,date) 
 Person.prototype.toString = function() {
 	return this.candidateName+", "+ this.DateTimeOfVerification+", "+ this.ResidentialAddress+", "+this.date;
 }
-// blöderweise muss dies eine gesonderte Funktion und kann kein alternativer konstruktor sein. Methoden können bei JS nicht überladen werden...
-function collection2Person(attributesAsCollection) {
+// Blöderweise muss dies eine gesonderte (allerdings "static", ohne ".prototype") Funktion und kann kein alternativer konstruktor sein. 
+// Methoden können bei JS nicht überladen werden...
+Person.collection2Person  = function(attributesAsCollection) {
 	return new Person(attributesAsCollection['candidateName'],attributesAsCollection['DateTimeOfVerification'],
 			attributesAsCollection['ResidentialAddress'],
 			attributesAsCollection['date']);
 }
+// -------------------- Person as Demo-Klasse -------------------------//
 
     // "nachträglicher" zugriff:
     function createEntry() {
@@ -95,7 +99,7 @@ function collection2Person(attributesAsCollection) {
 	            alert(obj.value.ResidentialAddress);
 	            alert(obj.value.date);
 	            
-	            var person=collection2Person(obj.value);
+	            var person=Person.collection2Person(obj.value);
 	            var s=person.toString();
 	            console.log(s);
 	            alert(s);
