@@ -11,6 +11,101 @@
         
     </head>
     <script type="text/javascript">
+    
+    function lawnchairExample() {
+    	// create a new store
+    	var people = new Lawnchair({adapter:'dom', name:'people'}, function() {});
+    	// saving documents
+    	people.save({key:1,name:'brian'});
+    	var settings = new Lawnchair({adapter:'dom', name:'settings'}, function() {});
+    	// saving documents
+    	settings.save({key:'config', settings:{color:'blue', font:'arial'}});
+		// folgendes überschreibt "settings" da key gleich ist. Dass es nun "settingsxxxxx" heißt, ist unerheblich
+    	settings.save({key:'config', settingsxxxxx:{color:'red', font:'times'}});
+    	 
+    	people.all(function(r){ 
+    		console.log(r)
+    	});
+    	settings.all(function(r){ 
+    		console.log(r)
+    	});
+    	 
+//     	people.each(function(r){ 
+//     		console.log(r)
+//     	});
+//     	settings.each(function(r){ 
+//     		console.log(r)
+//     	});
+    	 
+    	 
+    	people.get(1,function(r){ 
+    		console.log(r.key  + ":" + r.name);
+    	});
+    	settings.get('config',function(r){ 
+    		// hier muss es settingsxxxxx heißen, weil das der letzte "value" war, der unter dem key abgelegt wurde
+    		console.log(r.key  + ":" + r.settingsxxxxx.color + " "+r.settingsxxxxx.font );
+    	});
+    	 
+    	 
+    	// nothing lasts forever..
+    	settings.nuke();
+    	// nothing lasts forever..
+    	people.nuke();
+    }
+    function lawnchairExampleOrig() {
+    	// create a new store
+    	var store = new Lawnchair({adapter:'dom', table:'people'}, function() {});
+    	 
+    	// saving documents
+    	store.save({name:'brian'});
+    	 
+    	// optionally pass a key
+    	store.save({key:'config', settings:{color:'blue'}});
+    	 
+    	// updating a document in place is the same syntax
+    	store.save({key:'config', settings:{color:'green'}});
+    	 
+    	// almost everything accepts a callback
+    	var me = {name:'brian'};
+    	 
+    	store.save(me, function(doc){
+    	console.log(doc);
+    	});
+    	 
+//     	// terse callbacks
+//     	store.all('console.log(r)');
+    	 
+    	// expands to:
+    	store.all(function(r){ 
+    		console.log(r)
+    	});
+    	 
+    	// other ways to find documents
+//     	store.get(me, 'console.log(r)');
+    	store.get(me, function(r){ 
+    		console.log(r);
+    	});
+    	 
+//     	store.find('name === "brian"', 'console.log(r)');
+    	 
+    	// classic iteration
+    	store.each(function(r){
+    	console.log(r);
+    	});
+    	 
+    	// classic with terse shorthand syntax
+//     	people.each('console.log(r)');
+    	 
+    	// simple removal
+    	store.remove(me, function() {
+    	console.log('buh bye!');
+    	});
+    	 
+    	// nothing lasts forever..
+    	store.nuke();
+    }
+    
+    
 //     ADAPTER='indexed-db';
     ADAPTER='dom';
     
@@ -132,9 +227,10 @@ Person.collection2Person  = function(attributesAsCollection) {
     </script>
     <body>
         <h1>Lawnchair</h1>
-        <input id="conAdd" value="User"/><button onclick="javascript:createEntry();">create Entry</button> <br>
-        <input id="conRem" value="User"/><button onclick="javascript:removeEntry();">remove Entry</button> <br>
-        <input id="conFin" value="User"/><button onclick="javascript:getEntry();">get entry</button> <br>
+        <button onclick="javascript:createEntry();">create Entry</button> <br>
+        <button onclick="javascript:removeEntry();">remove Entry</button> <br>
+        <button onclick="javascript:getEntry();">get entry</button> <br>
+        <button onclick="javascript:lawnchairExample();">Lawnchair-Example</button> <br>
         <p style="padding-top:20px;"><a href="../index.html">&lt; Liste</a></p>
     </body>
 </html>
